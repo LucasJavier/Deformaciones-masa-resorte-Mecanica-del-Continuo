@@ -92,8 +92,9 @@ function [m, kij] = sistema_masa_resorte()
     [max_desp_c, t_max_c] = maximo_desplazamiento(idx_c,pos_inicial_flat,Y_chicas,t_chicas);
 
     % Inciso e)
-    frec = 10;
-    [t_sin, Y_sin] = ode45(@(t,Y) f(t, Y, kij, pos_inicial, m, 1, 1, frec ),...
+    frec = 5;
+    opts = odeset('RelTol', 1e-6, 'AbsTol', 1e-9, 'MaxStep', 0.01);
+    [t_sin, Y_sin] = ode15s(@(t,Y) f(t, Y, kij, pos_inicial, m, 1, 1, frec ),...
                                        tspan, Y0, opts);
 
     % Grandes deformaciones - P(t) = sin

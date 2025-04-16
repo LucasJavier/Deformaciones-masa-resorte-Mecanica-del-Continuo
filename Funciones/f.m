@@ -5,7 +5,9 @@ function dYdt = f(t, Y, kij, pos_inicial, m, grandes_deformaciones, es_sinusoida
 
     % Carga P(t)
     if es_sinusoidal
-        P_t = sin(2*pi*frec*t);
+        Amp = 10;
+        omega = 2*pi*frec;
+        P_t = Amp*sin(omega*t);
         P = [P_t, P_t];
     else
         P = [1.2, 1.2]; % Carga original
