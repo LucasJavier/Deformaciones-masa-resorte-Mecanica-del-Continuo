@@ -1,10 +1,10 @@
-function graficar_tensiones(t_g, t_c, tf_g_idx, tf_c_idx, F_a_g, F_a_c, nb_g, nb_c, A)
+function graficar_tensiones(t_g, t_c, tf_g_idx, tf_c_idx, F_a_g, F_a_c, nb_g, nb_c, A, figure_idx)
   nb_gx = nb_g(:,1);
   nb_gy = nb_g(:,2);
   nb_cx = nb_c(:,1);
   nb_cy = nb_c(:,2);
 
-  figure(7);
+  figure(figure_idx, 'Name', 'Fuerzas');
   plot(t_g(1:tf_g_idx), F_a_g(1:tf_g_idx) / A, 'b-', 'LineWidth', 1.5);
   hold on;
   plot(t_c(1:tf_c_idx), F_a_c(1:tf_c_idx) / A, 'r-', 'LineWidth', 1.5);
@@ -15,7 +15,7 @@ function graficar_tensiones(t_g, t_c, tf_g_idx, tf_c_idx, F_a_g, F_a_c, nb_g, nb
   grid on;
   pause(2)
 
-  figure(8);
+  figure(figure_idx+1, 'Name', 'Movimiento nodo 6');
   subplot(2,1,1);
   plot(t_g(1:tf_g_idx), nb_gx(1:tf_g_idx), 'b-', 'LineWidth', 1.5);
   hold on;

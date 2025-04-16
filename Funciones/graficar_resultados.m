@@ -1,13 +1,13 @@
-function graficar_resultados(t, Y, pos_inicial, figura_idx, es_sinusoidal, frec)
+function graficar_resultados(t, Y, pos_inicial, figura_idx, es_sinusoidal, frec, nombre)
     % Configurar figura para nodos
-    figure(figura_idx, 'Position', [50, 50, 900, 750]);
+    figure(figura_idx, 'Position', [50, 50, 900, 750], 'Name', nombre);
     nodos = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '10'};
     idx = 2;
     for i = 1:10
         subplot(5, 2, i);
-        if i == 1 || i == 7  % Nodos fijos
+        if i == 1 % Nodos fijos
             plot(t, zeros(size(t)), 'k-', ...
-                 t, repmat(pos_inicial(i,2), size(t)), 'r-');
+                 t, Y(:,1), 'r-');
         elseif i == 7
             plot(t, repmat(pos_inicial(i,1), size(t)), 'k-', ...
                  t, repmat(pos_inicial(i,2), size(t)), 'r-');
@@ -16,9 +16,9 @@ function graficar_resultados(t, Y, pos_inicial, figura_idx, es_sinusoidal, frec)
           idx = idx + 2;
         endif
        xlabel('Tiempo (s)'); ylabel('Posición (m)');
-       legend('x', 'y');
+        legend('x', 'y', 'Location', 'northeast');
        if es_sinusoidal
-         title(['Nodo: ' nodos{i}, 'Frecuencia: ' num2str(frec)]);
+         title(['Nodo: ' nodos{i}, ' - Frecuencia: ' num2str(frec)]);
        else
          title(['Nodo: ' nodos{i}]);
        endif
@@ -27,7 +27,7 @@ function graficar_resultados(t, Y, pos_inicial, figura_idx, es_sinusoidal, frec)
     pause(2)
 
     % Configurar figura para evolución global
-    figure(figura_idx, 'Position', [100, 100, 800, 600]);
+    figure(figura_idx, 'Position', [100, 100, 800, 600], 'Name', nombre);
     colores = lines(10);
 
     % Posiciones X
@@ -49,9 +49,9 @@ function graficar_resultados(t, Y, pos_inicial, figura_idx, es_sinusoidal, frec)
       title('Evolución de Posiciones X');
     endif
     xlabel('Tiempo (s)'); ylabel('X (m)');
-    legend(nodos, 'Location', 'eastoutside');
+    legend(nodos, 'Location', 'northeast');
     grid on;
-    yticks(-150:10:40);
+    #yticks(-150:10:40);
 
     % Posiciones Y
     subplot(2,1,2); hold on;
@@ -72,7 +72,7 @@ function graficar_resultados(t, Y, pos_inicial, figura_idx, es_sinusoidal, frec)
       title('Evolución de Posiciones Y');
     endif
     xlabel('Tiempo (s)'); ylabel('Y (m)');
-    legend(nodos, 'Location', 'eastoutside');
+    legend(nodos, 'Location', 'northeast');
     grid on;
     %yticks(-150:10:40);
     pause(2)

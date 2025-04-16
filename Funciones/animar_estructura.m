@@ -1,9 +1,9 @@
-function animar_estructura(Y, t, tF_idx, fig_num, paso, pos_inicial, barras)
-    figure(fig_num);
+function animar_estructura(Y, t, tF_idx, fig_num, paso, pos_inicial, barras, nombre)
+    figure(fig_num, 'Name', nombre);
     axis equal;
     grid on;
     xlabel('X'); ylabel('Y');
-    for t_step = 1:paso:length(tF_idx)
+    for t_step = 1:paso:tF_idx
         cla;
         plot_estructura(Y, pos_inicial, t, t_step, barras);
         title(['Estructura en t = ', num2str(t(t_step))]);

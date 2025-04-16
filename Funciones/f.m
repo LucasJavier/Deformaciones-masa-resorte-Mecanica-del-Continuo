@@ -1,6 +1,6 @@
 function dYdt = f(t, Y, kij, pos_inicial, m, grandes_deformaciones, es_sinusoidal, frec)
     % Posiciones fijas
-    y1 = pos_inicial(1, 2);  % y1 fijo
+    y1 = pos_inicial(1, 2);  % x1 fijo
     x7 = pos_inicial(7, 1); y7 = pos_inicial(7, 2); % Nodo 7 fijo
 
     % Carga P(t)
@@ -53,8 +53,8 @@ function dYdt = f(t, Y, kij, pos_inicial, m, grandes_deformaciones, es_sinusoida
     dv5dt = (-F45y + F56y + F59y + F510y) / m(5);
     du6dt = (-F56x + F610x + P(1)) / m(6);
     dv6dt = (-F56y + F610y - P(2)) / m(6);
-    du8dt = (-F38x - F48x + F78x + F89x) / m(8);
-    dv8dt = (-F38y - F48y + F78y + F89y) / m(8);
+    du8dt = (-F38x - F48x - F78x + F89x) / m(8);
+    dv8dt = (-F38y - F48y - F78y + F89y) / m(8);
     du9dt = (-F49x - F59x - F89x + F910x) / m(9);
     dv9dt = (-F49y - F59y - F89y + F910y) / m(9);
     du10dt = (-F510x - F610x - F910x) / m(10);
@@ -62,7 +62,7 @@ function dYdt = f(t, Y, kij, pos_inicial, m, grandes_deformaciones, es_sinusoida
 
     % Vector derivadas
     dYdt = [
-        Y(18);          % dy2/dt
+        Y(18);          % dy1/dt
         Y(19); Y(20);   % dx2/dt, dy2/dt
         Y(21); Y(22);   % dx3/dt, dy3/dt
         Y(23); Y(24);   % dx4/dt, dy4/dt
