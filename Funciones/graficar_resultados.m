@@ -16,7 +16,7 @@ function graficar_resultados(t, Y, pos_inicial, figura_idx, es_sinusoidal, frec,
           idx = idx + 2;
         endif
        xlabel('Tiempo (s)'); ylabel('Posición (m)');
-        legend('x', 'y', 'Location', 'northeast');
+       legend('x', 'y', 'Location', 'northeast');
        if es_sinusoidal
          title(['Nodo: ' nodos{i}, ' - Frecuencia: ' num2str(frec)]);
        else

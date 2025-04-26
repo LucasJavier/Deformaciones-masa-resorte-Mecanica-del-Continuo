@@ -1,6 +1,7 @@
-function [m, kij] = sistema_masa_resorte()
+function sistema_masa_resorte()
     clc; close all; clear;
 
+    % Conexion de barras
     barras = [
         [1, 3]; [3, 2]; [2, 1]; [2, 7]; [7, 3]; [3, 8]; [8, 7];
         [4, 3]; [8, 4]; [4, 9]; [9, 8]; [5, 4]; [9, 5]; [5, 10];
@@ -59,10 +60,10 @@ function [m, kij] = sistema_masa_resorte()
                                              tspan, Y0, opts);
 
     % Calculamos las fuerzas en barra 'a' y posicion nodo 'b'
-    [F_a_grandes, nodo_b_grandes] = calcular_fuerzas(Y_grandes, kij, pos_inicial, 1);
-    [F_a_chicas, nodo_b_chicas] = calcular_fuerzas(Y_chicas, kij, pos_inicial, 0);
+    [F_a_grandes, F_a_N_grandes, F_a_T_grandes, nodo_b_grandes] = calcular_fuerzas(Y_grandes, kij, pos_inicial, 1, A);
+    [F_a_chicas, F_a_N_chica, F_a_T_chica, nodo_b_chicas] = calcular_fuerzas(Y_chicas, kij, pos_inicial, 0, A);
 
-    % Grandes deformaciones
+    % Grandes deformaciones, encontrar limite
     tF_grandes = encontrar_tF(t_grandes, Y_grandes, pos_inicial);
     tF_grandes_idx = find(t_grandes >= tF_grandes, 1); % Índice donde ocurre tF
                                  % 1: solo devuelve el 1ero que encuentra
@@ -70,7 +71,7 @@ function [m, kij] = sistema_masa_resorte()
         tF_grandes_idx = length(t_grandes);
     endif
 
-    % Pequeñas deformaciones
+    % Pequeñas deformaciones, encontrar limite
     tF_chico = encontrar_tF(t_chicas, Y_chicas, pos_inicial);
     tF_chico_idx = find(t_chicas >= tF_chico, 1); % Índice donde ocurre tF
                                  % 1: solo devuelve el 1ero que encuentra
@@ -86,6 +87,7 @@ function [m, kij] = sistema_masa_resorte()
     % Posiciones iniciales (primeras 17 componentes de Y0)
     pos_inicial_flat = Y0(1:17)';
 
+    % Encontramos la norma del vector desplazamiento maximo
     % Para grandes deformaciones
     [max_desp_g, t_max_g] = maximo_desplazamiento(idx_g,pos_inicial_flat,Y_grandes,t_grandes);
     % Para pequeñas deformaciones
@@ -94,6 +96,12 @@ function [m, kij] = sistema_masa_resorte()
     % Inciso e)
     frec = 5;
     opts = odeset('RelTol', 1e-6, 'AbsTol', 1e-9, 'MaxStep', 0.01);
+    % Usamos ode15s, ya que es mas rapido para EDOs con sistemas rigidos.
+    % ode45 requiere pasos pequeños para mantener la estabilidad en sistemas con escalas de tiempo
+    % muy diferentes (rigidez). Por ejemplo, una carga de frecuencia de 100 Hz introduce una escala
+    % de tiempo de ~0.01 segundos, forzando pasos aún más pequeños.
+    % ode15s utiliza algoritmos implícitos adaptativos que manejan mejor la rigidez y permiten pasos
+    % más grandes sin perder estabilidad.
     [t_sin, Y_sin] = ode15s(@(t,Y) f(t, Y, kij, pos_inicial, m, 1, 1, frec ),...
                                        tspan, Y0, opts);
 
@@ -134,10 +142,10 @@ function [m, kij] = sistema_masa_resorte()
     % Graficar las tensiones
     graficar_tensiones(t_grandes, t_chicas, tF_grandes_idx, tF_chico_idx,...
                       F_a_grandes, F_a_chicas, nodo_b_grandes, nodo_b_chicas,...
-                      A, 7);
+                      F_a_N_grandes, F_a_N_chica, F_a_T_grandes, F_a_T_chica, 7);
 
     % Animaciones
-    animar_estructura(Y_grandes, t_grandes, tF_grandes_idx, 9, 10, pos_inicial, barras, 'Grandes deformaciones');
-    animar_estructura(Y_chicas, t_chicas, tF_chico_idx, 10, 10, pos_inicial, barras, 'Pequeñas deformaciones');
-    animar_estructura(Y_sin, t_sin, tF_sin_idx, 11, 1000, pos_inicial, barras, 'Grandes deformaciones - Carga sinusoidal');
+    animar_estructura(Y_grandes, t_grandes, tF_grandes_idx, 10, 10, pos_inicial, barras, 'Grandes deformaciones');
+    animar_estructura(Y_chicas, t_chicas, tF_chico_idx, 11, 10, pos_inicial, barras, 'Pequeñas deformaciones');
+    animar_estructura(Y_sin, t_sin, tF_sin_idx, 12, 700, pos_inicial, barras, 'Grandes deformaciones - Carga sinusoidal');
 endfunction
